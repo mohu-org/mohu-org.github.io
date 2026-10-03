@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#ffffff" />
+    <meta name="description" content="Mohu is building a Rust-powered numerical computing stack for Python, starting with arrays, typed memory, and explicit layouts." />
+    <title>mohu — Numerical computing, rebuilt in Rust</title>
+    <link rel="icon" type="image/png" href="assets/mohu-mark.png" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header" id="site-header">
+      <div class="shell nav-row">
+        <a class="brand" href="#top" aria-label="Mohu home">
+          <span class="brand-mark"><img src="assets/mohu-mark.png" alt="" width="56" height="56" /></span>
+          <span>mohu</span>
+        </a>
+        <nav aria-label="Main navigation">
+          <a href="#top">Overview</a>
+          <a href="#architecture">Architecture</a>
+          <a href="https://github.com/mohu-org/mohu/tree/main/docs">Docs</a>
+          <a href="#community">Community</a>
+          <a class="nav-github" href="https://github.com/mohu-org/mohu">GitHub <span aria-hidden="true">↗</span></a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="hero shell" id="top">
+        <h1>Numerical computing,<br />rebuilt in Rust.</h1>
+        <p>Mohu is an open source numerical computing stack for Python, built in Rust around explicit memory, layouts, types, and execution.</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="#architecture">Explore Mohu</a>
+          <a class="button button-secondary" href="https://github.com/mohu-org/mohu">View on GitHub <span aria-hidden="true">↗</span></a>
+        </div>
+        <span class="hero-note">An early-stage project. Core memory primitives are implemented; higher-level APIs are in progress.</span>
+      </section>
+
+      <section class="memory-section" id="memory">
+        <div class="shell memory-shell">
+          <span class="section-number">01</span>
+          <h2 class="memory-heading">One buffer. Many views.<br /><span>Zero unnecessary copies.</span></h2>
+          <div class="memory-visual" aria-label="A six element buffer represented as a two by three array and a transposed three by two view">
+            <div class="buffer-header"><strong>Buffer</strong><span>f32 · row-major · 24 bytes</span></div>
+            <div class="memory-strip" aria-label="Buffer values one through six">
+              <div><span>1.0</span><small>+00</small></div><div><span>2.0</span><small>+04</small></div><div><span>3.0</span><small>+08</small></div><div><span>4.0</span><small>+12</small></div><div><span>5.0</span><small>+16</small></div><div><span>6.0</span><small>+20</small></div>
+            </div>
+            <div class="views">
+              <article class="view-example">
+                <div class="view-title"><strong>Source view</strong><span>shape [2, 3] · strides [12, 4]</span></div>
+                <div class="matrix matrix-source" aria-hidden="true"><span>1.0</span><span>2.0</span><span>3.0</span><span>4.0</span><span>5.0</span><span>6.0</span></div>
+              </article>
+              <div class="transpose-mark"><span>transpose()</span><i aria-hidden="true">↓</i></div>
+              <article class="view-example view-transposed">
+                <div class="view-title"><strong>Transposed view</strong><span>shape [3, 2] · strides [4, 12]</span></div>
+                <div class="matrix matrix-transposed" aria-hidden="true"><span>1.0</span><span>4.0</span><span>2.0</span><span>5.0</span><span>3.0</span><span>6.0</span></div>
+              </article>
+            </div>
+            <p class="memory-caption">The values stay put. Mohu changes the shape and strides used to read them.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="philosophy shell">
+        <span class="section-number">02</span>
+        <div><h2>Memory is not an<br />implementation detail.</h2><p>Storage, dtype, and layout are explicit parts of Mohu’s model. That gives array operations a foundation designed for predictable views and efficient interchange.</p></div>
+      </section>
+
+      <section class="foundations-section">
+        <div class="shell foundations-shell">
+          <span class="section-number">03</span>
+          <h2 class="foundations-heading">Built from first principles.</h2>
+          <div class="foundations">
+            <article class="foundation-item">
+              <div class="mini-visual storage-visual" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+              <h3>Storage</h3>
+              <p>Typed, aligned buffers with explicit ownership, allocation strategies, and a clear boundary between bytes and layout.</p>
+            </article>
+            <article class="foundation-item">
+              <div class="mini-visual layout-visual" aria-hidden="true"><span>shape</span><b>[2, 3]</b><span>strides</span><b>[12, 4]</b></div>
+              <h3>Layout</h3>
+              <p>Shapes, strides, offsets, views, and broadcasting describe how data is read without requiring a new allocation.</p>
+            </article>
+            <article class="foundation-item">
+              <div class="mini-visual compute-visual" aria-hidden="true"><span>f32</span><i>×</i><span>f32</span><b>→</b><span>f32</span></div>
+              <h3>Compute</h3>
+              <p>The compute crates are being scaffolded around element-wise operations, reductions, and architecture-aware kernels.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="architecture-section" id="architecture">
+        <div class="shell architecture-shell">
+          <span class="section-number">04</span>
+          <div class="architecture-intro">
+            <h2>A workspace,<br />not a monolith.</h2>
+            <p>Small Rust crates separate array APIs from the memory, type, and compute layers underneath.</p>
+          </div>
+          <div class="architecture-visual" aria-label="Mohu workspace architecture">
+            <div class="arch-node arch-python">Python</div>
+            <div class="arch-connector" aria-hidden="true"></div>
+            <div class="arch-node arch-api"><b>mohu-py</b><small>PyO3 bindings · companion repository</small></div>
+            <div class="arch-connector" aria-hidden="true"></div>
+            <div class="arch-row arch-arrays"><div class="arch-node"><b>mohu-array</b><small>NdArray · partial</small></div><div class="arch-node"><b>mohu-core</b><small>re-export facade</small></div></div>
+            <div class="arch-connector" aria-hidden="true"></div>
+            <div class="arch-row arch-foundation"><div class="arch-node"><b>mohu-buffer</b><small>storage + layout</small></div><div class="arch-node"><b>mohu-dtype</b><small>type system</small></div><div class="arch-node"><b>mohu-error</b><small>error model</small></div></div>
+            <div class="compute-layer"><span>Compute and extensions</span><b>mohu-ops</b><b>mohu-simd</b><b>mohu-ufunc</b><b>mohu-index</b><b>…</b></div>
+            <p class="architecture-caption">Foundation crates are implemented. Higher-level crates are in progress or scaffolded.</p>
+          </div>
+          <a class="architecture-link" href="https://github.com/mohu-org/mohu/blob/main/CRATE_MAP.md">Explore the crate map <span aria-hidden="true">↗</span></a>
+        </div>
+      </section>
+
+      <section class="code-section shell">
+        <span class="section-number">05</span>
+        <div class="code-intro">
+          <h2>Transpose the view.<br /><span>Not the memory.</span></h2>
+          <p>Today, the usable surface is <code>mohu-buffer</code>: typed construction, metadata, and zero-copy layout changes.</p>
+        </div>
+        <div class="code-panel">
+          <div class="code-topline"><img src="assets/mohu-mark.png" alt="" width="26" height="26" /><span>mohu-buffer · Rust</span></div>
+          <pre><code><span class="code-comment">// Construct a typed two-dimensional buffer.</span>
+let a = Buffer::from_slice_2d::&lt;f32&gt;(
+    &amp;[
+        &amp;[1.0, 2.0, 3.0],
+        &amp;[4.0, 5.0, 6.0],
+    ],
+)?;
+
+<span class="code-comment">// Transpose rewrites the stride vector.</span>
+let t = a.transpose();
+assert_eq!(t.shape(), &amp;[3, 2]);</code></pre>
+          <a href="https://github.com/mohu-org/mohu#quickstart">Read the quickstart <span aria-hidden="true">↗</span></a>
+        </div>
+      </section>
+
+      <section class="open-source-section">
+        <div class="shell open-source-inner">
+          <span class="section-number">06</span>
+          <div class="open-source-content">
+            <div class="open-source-copy"><h2>Built in<br />the open.</h2><p>Mohu is developed in public under the MIT license. Core memory primitives are in place; the numerical APIs are still taking shape.</p></div>
+            <div class="project-facts" aria-label="Project facts"><div><strong>17</strong><span>workspace crates</span></div><div><strong>MIT</strong><span>open source license</span></div><div><strong>Pre-alpha</strong><span>development stage</span></div></div>
+            <div class="open-source-links"><a class="button button-primary" href="https://github.com/mohu-org/mohu/blob/main/CONTRIBUTING.md">Start contributing</a><a href="https://github.com/mohu-org/mohu/issues?q=is%3Aopen+label%3A%22good+first+issue%22">Good first issues <span aria-hidden="true">↗</span></a><a href="https://github.com/mohu-org/mohu">GitHub <span aria-hidden="true">↗</span></a></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="status-section shell" id="status">
+        <span class="section-number">07</span>
+        <div><h2>Early, deliberately.</h2><p>Mohu is pre-alpha and not yet a NumPy replacement. The project is building and validating core memory primitives before stabilizing the higher-level numerical API.</p><a href="https://github.com/mohu-org/mohu/blob/main/ROADMAP.md">View the roadmap <span aria-hidden="true">↗</span></a></div>
+      </section>
+
+      <section class="community-section" id="community">
+        <div class="shell community-shell">
+          <span class="section-number">08</span>
+          <div class="community-content">
+            <div class="community-heading"><h2>People behind Mohu.</h2><p>Thank you to everyone building this in the open.</p></div>
+            <div class="community-frame">
+              <ul class="contributors-list" id="contributors-list" aria-label="Mohu contributors">
+                <li>Aditya Singh</li><li>Anshika</li><li>Anvesh Anand Pol</li><li>Bbn08</li><li>Eshaan Agrawal</li><li>Gayatri Padalia</li><li>Hansika</li><li>Maitreyee Durugkar</li><li>Manish Kumar</li><li>Prince</li><li>Puneeth Aditya</li><li>Soumya Sakshi</li><li>mahema-14</li><li>mugiwaraluffy56</li><li>truffle</li>
+              </ul>
+              <a class="community-link" href="https://github.com/mohu-org/mohu/graphs/contributors">See every contributor on GitHub <span aria-hidden="true">↗</span></a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="shell footer-inner">
+        <div class="footer-brand"><a class="brand" href="#top"><span class="brand-mark"><img src="assets/mohu-mark.png" alt="" width="56" height="56" /></span><span>mohu</span></a><p>Numerical computing from the memory up.</p></div>
+        <div class="footer-links"><a href="https://github.com/mohu-org/mohu">GitHub</a><a href="https://github.com/mohu-org/mohu/tree/main/docs">Docs</a><a href="https://github.com/mohu-org/mohu/blob/main/CONTRIBUTING.md">Contributing</a><a href="https://github.com/mohu-org/mohu/blob/main/SECURITY.md">Security</a><a href="https://github.com/mohu-org/mohu/blob/main/LICENSE">License</a></div>
+        <div class="footer-bottom"><span>Built in the open.</span><span>© 2026 Mohu contributors</span></div>
+      </div>
+    </footer>
+    <script src="script.js" defer></script>
+  </body>
+</html>
